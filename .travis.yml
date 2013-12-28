@@ -1,5 +1,5 @@
 language: java
-script: sh -c 'cd java/Tracker' && mvn clean install
+script: cd java/Tracker && mvn clean install
 jdk:
 - openjdk6
 - openjdk7
