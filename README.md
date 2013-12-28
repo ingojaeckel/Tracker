@@ -21,7 +21,7 @@ Message Format
 Messages
 ========
 
-Messges sent from client to server
+Messages sent from client to server
 ----------------------------------
 
 | Type | Name   | Payload	   | Response |	Description                                                                          |
