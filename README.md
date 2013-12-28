@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jaeckel/Tracker.png?branch=master)](https://travis-ci.org/jaeckel/Tracker)
+
 Introduction
 ============
 Tracker is a TCP server/client that implements a simple state protocol to track the state of clients. Clients can open connections, close connections, and change their state. The server keeps track of the state of all connected clients.
