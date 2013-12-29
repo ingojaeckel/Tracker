@@ -61,12 +61,12 @@ public class UpdateOneMessage implements Message {
 		final long version = parser.readLong(bytes, 0);
 		final long lenId = parser.readLong(bytes, 0 + 8);
 		if (lenId > 10) {
-			System.err.println("something is up, the ID should not be longer than 10");
+			throw new IllegalArgumentException("something is up, the ID should not be longer than 10");
 		}
 		final String id = parser.readString(bytes, 0 + 8 + 8, lenId);
 		final long lenState = parser.readLong(bytes, 0 + 8 + 8 + lenId);
 		if (lenState > 50) {
-			System.err.println("something is up. state string should not be longer than 50 ");
+			throw new IllegalArgumentException("something is up. state string should not be longer than 50 ");
 		}
 		final String state = parser.readString(bytes, 0 + 8 + 8 + lenId + 8, lenState);
 

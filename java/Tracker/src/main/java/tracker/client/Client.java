@@ -44,7 +44,7 @@ public class Client {
 		bytes += send(new CloseMessage(id), true);
 		in.read(closeMessageResponse);
 		if (closeMessageResponse[0] != 1) {
-			System.out.println("unexpected response on close " + closeMessageResponse[0]);
+			throw new IllegalArgumentException("unexpected response on close " + closeMessageResponse[0]);
 		}
 
 		final long diff = System.currentTimeMillis() - before;

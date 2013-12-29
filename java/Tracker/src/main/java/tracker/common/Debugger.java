@@ -4,7 +4,7 @@ public class Debugger {
 	public static boolean ENABLED = false;
 
 	public static String bytesToString(final byte[] bytes) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("{\n");
 
 		for (int i = 0; i < bytes.length; i++) {

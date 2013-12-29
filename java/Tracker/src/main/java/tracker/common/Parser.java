@@ -34,11 +34,8 @@ public class Parser {
 	}
 
 	public String readString(byte[] bytes, long indexStart, long length) {
-		// System.out.format("from %3d - %3d (len = %d, max len = %d)%n",
-		// indexStart, indexStart + length, length, bytes.length);
-
 		if (length > 1000) {
-			System.err.println("something is up. length should not be bigger than 1000");
+			throw new IllegalArgumentException("something is up. length should not be bigger than 1000");
 		}
 
 		final byte[] buf = new byte[(int) length];
@@ -57,8 +54,6 @@ public class Parser {
 	}
 
 	public long readLong(byte[] bytes, long indexStart) {
-		// System.out.format("from %3d - %3d%n", indexStart, indexStart + 8);
-
 		final ByteBuffer bb = ByteBuffer.allocate(8);
 
 		// Put all 8 bytes representing the long value into the ByteBuffer
@@ -99,14 +94,11 @@ public class Parser {
 
 			final ByteBuffer bb = ByteBuffer.allocate(8);
 			for (int i = 0; i < 8; i++) {
-				// System.out.format("buf[%d]=%c%n", i, buf[i]);
 				bb.put((byte) buf[i]);
 			}
 			bb.flip();
 
-			long value = bb.getLong();
-			// System.out.println("parsed " + value);
-			return value;
+			return bb.getLong();
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
