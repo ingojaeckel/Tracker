@@ -11,7 +11,7 @@ public class CloseMessage implements Message {
 	private static final Parser parser = new Parser();
 
 	public CloseMessage(String id) {
-		this.id = id;
+		this.id = id.trim();
 	}
 
 	@Override
@@ -22,8 +22,8 @@ public class CloseMessage implements Message {
 			dos.write(MAGIC);
 			dos.write(1);
 			dos.write(MessageType.Close.get());
-			dos.writeLong(id.trim().toString().length());
-			dos.writeBytes(id.trim().toString());
+			dos.writeLong(id.length());
+			dos.writeBytes(id);
 
 			return baos.toByteArray();
 		} catch (Exception exception) {

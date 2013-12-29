@@ -61,14 +61,16 @@ public class Client {
 		final long diff = System.currentTimeMillis() - before;
 		final double timePerMessage = (double) diff / (double) maxMessageCount;
 		final double messagesPerSecond = 1000.0 / timePerMessage;
-		final int megaBytes = bytes / 1024;
-		final double megaBytePerSecond = (double) megaBytes / ((double) diff / 1000.0);
+		final int kiloBytes = bytes / 1024;
+		final double kiloBytePerSecond = (double) kiloBytes / ((double) diff / 1000.0);
+		final double bytesPerMessage = (double) bytes / maxMessageCount;
 
 		System.out.println();
 		System.out.format("%d messages in %d ms%n", maxMessageCount, diff);
 		System.out.format("%.1f ms per message%n", timePerMessage);
 		System.out.format("%.1f messages per second%n", messagesPerSecond);
-		System.out.format("%d KB, %.1f KB per second%n", megaBytes, megaBytePerSecond);
+		System.out.format("%d KB, %.1f KB per second%n", kiloBytes, kiloBytePerSecond);
+		System.out.format("%.1f bytes per message%n", bytesPerMessage);
 
 		socket.close();
 	}

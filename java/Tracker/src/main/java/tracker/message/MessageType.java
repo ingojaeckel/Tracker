@@ -28,7 +28,7 @@ public enum MessageType {
 		}
 	}
 
-	public byte get() {
+	public final byte get() {
 		return value;
 	}
 }

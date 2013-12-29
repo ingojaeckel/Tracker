@@ -14,8 +14,8 @@ public class UpdateOneMessage implements Message {
 	private static final Parser parser = new Parser();
 
 	public UpdateOneMessage(long version, String id, String state) {
-		this.id = id;
-		this.state = state;
+		this.id = id.trim();
+		this.state = state.trim();
 		this.version = version;
 	}
 
@@ -28,22 +28,19 @@ public class UpdateOneMessage implements Message {
 			dos.write(1);
 			dos.write(MessageType.UpdateOne.get());
 
+			// payload length
 			// 4 bytes version
 			// 4 bytes id length
 			// 4 bytes state length
 			// variable length: id, state
-			dos.writeLong(3 * 8 + id.trim().length() + state.toString().trim().length()); // payload
-																							// length
+			dos.writeLong(3 * 8 + id.length() + state.length());
 			dos.writeLong(version);
 
-			dos.writeLong(id.trim().length());
-			dos.writeBytes(id.trim());
+			dos.writeLong(id.length());
+			dos.writeBytes(id);
 
-			dos.writeLong(state.trim().toString().length());
-			dos.writeBytes(state.trim().toString());
-
-			// System.out.println("sent " + id.trim().length() +
-			// " as the ID length");
+			dos.writeLong(state.length());
+			dos.writeBytes(state);
 
 			return baos.toByteArray();
 		} catch (Exception e) {
@@ -51,7 +48,7 @@ public class UpdateOneMessage implements Message {
 		}
 	}
 
-	public static UpdateOneMessage parse(InputStreamReader in) {
+	public static UpdateOneMessage parse(final InputStreamReader in) {
 		final long payloadLen = parser.readLong(in);
 
 		if (payloadLen > 1000) {
