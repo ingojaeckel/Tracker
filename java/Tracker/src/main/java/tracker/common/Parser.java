@@ -1,6 +1,6 @@
 package tracker.common;
 
-import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.nio.ByteBuffer;
 
 import tracker.message.Message;
@@ -13,7 +13,7 @@ public class Parser {
 	 * 
 	 * @return The numBytes bytes that were read from in.
 	 */
-	public byte[] readBytes(InputStreamReader in, int numBytes) {
+	public byte[] readBytes(BufferedReader in, int numBytes) {
 		try {
 			final char[] all = new char[numBytes];
 			final int read = in.read(all);
@@ -75,7 +75,7 @@ public class Parser {
 		return bb.getLong();
 	}
 
-	public String readString(InputStreamReader in, final long len) {
+	public String readString(BufferedReader in, final long len) {
 		try {
 			final char[] buf = new char[(int) len];
 			int read = -1;
@@ -89,7 +89,7 @@ public class Parser {
 		}
 	}
 
-	public long readLong(InputStreamReader in) {
+	public long readLong(BufferedReader in) {
 		try {
 			final char[] buf = new char[8];
 

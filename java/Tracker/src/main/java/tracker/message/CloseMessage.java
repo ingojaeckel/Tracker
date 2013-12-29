@@ -1,8 +1,8 @@
 package tracker.message;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 
 import tracker.common.Parser;
 
@@ -31,7 +31,7 @@ public class CloseMessage implements Message {
 		}
 	}
 
-	public static CloseMessage parse(InputStreamReader in) {
+	public static CloseMessage parse(BufferedReader in) {
 		final long len = parser.readLong(in);
 		final String id = parser.readString(in, len);
 

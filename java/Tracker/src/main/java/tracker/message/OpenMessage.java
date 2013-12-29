@@ -1,8 +1,8 @@
 package tracker.message;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 
 import tracker.common.Parser;
 
@@ -31,7 +31,7 @@ public class OpenMessage implements Message {
 		}
 	}
 
-	public static OpenMessage parse(InputStreamReader in) {
+	public static OpenMessage parse(BufferedReader in) {
 		try {
 			final long len = parser.readLong(in);
 			final byte[] bytes = parser.readBytes(in, (int) len);

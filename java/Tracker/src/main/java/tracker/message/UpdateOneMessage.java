@@ -1,8 +1,8 @@
 package tracker.message;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 
 import tracker.common.Debugger;
 import tracker.common.Parser;
@@ -48,7 +48,7 @@ public class UpdateOneMessage implements Message {
 		}
 	}
 
-	public static UpdateOneMessage parse(final InputStreamReader in) {
+	public static UpdateOneMessage parse(final BufferedReader in) {
 		final long payloadLen = parser.readLong(in);
 
 		if (payloadLen > 1000) {

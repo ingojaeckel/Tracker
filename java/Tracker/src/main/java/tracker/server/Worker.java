@@ -1,6 +1,7 @@
 package tracker.server;
 
-import java.io.DataOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,16 +17,16 @@ import tracker.message.UpdateOneMessage;
 
 public class Worker implements Runnable {
 	private static final byte[] OK = new byte[] { 1 };
-	private final InputStreamReader in;
-	private final DataOutputStream out;
+	private final BufferedReader in;
+	private final BufferedOutputStream out;
 	private final ConcurrentHashMap<String, Versioned<String>> map;
 
 	public Worker(final Socket socket, final ConcurrentHashMap<String, Versioned<String>> map) {
 		try {
 			System.out.println("connection " + socket.toString());
 			this.map = map;
-			this.in = new InputStreamReader(socket.getInputStream());
-			this.out = new DataOutputStream(socket.getOutputStream());
+			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			this.out = new BufferedOutputStream(socket.getOutputStream());
 		} catch (final Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -79,7 +80,7 @@ public class Worker implements Runnable {
 						}
 					}
 
-					writeAndFlush(OK);
+					// Don't send a response to the client.
 					break;
 				case UpdateAll:
 					// Not implemented yet.

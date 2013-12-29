@@ -1,6 +1,6 @@
 package tracker.client;
 
-import java.io.DataOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -13,13 +13,13 @@ import tracker.message.UpdateOneMessage;
 
 public class Client {
 	private final Socket socket;
-	private final DataOutputStream out;
+	private final BufferedOutputStream out;
 	private final InputStreamReader in;
 
 	public Client(final String hostname, final int port) throws Exception {
 		System.out.format("connecting to %s:%d.. ", hostname, port);
 		this.socket = new Socket(hostname, port);
-		this.out = new DataOutputStream(socket.getOutputStream());
+		this.out = new BufferedOutputStream(socket.getOutputStream());
 		this.in = new InputStreamReader(socket.getInputStream());
 		System.out.format("done. [%s]%n", socket);
 	}
@@ -28,31 +28,20 @@ public class Client {
 		int bytes = 0;
 
 		System.out.println("sending open request..");
-		bytes += send(new OpenMessage(new State(0, 0).toString()));
+		bytes += send(new OpenMessage(new State(0, 0).toString()), true);
 		final char[] openMessageResponse = new char[16];
 		in.read(openMessageResponse);
 		final String id = new String(openMessageResponse);
 		System.out.println("Received ID: " + id);
 
 		final long before = System.currentTimeMillis();
-		final char[] response = new char[1];
-		int bytesRead;
 
 		for (int i = 0; i < maxMessageCount; i++) {
-			final String state = new State(i, i).toString();
-			bytes += send(new UpdateOneMessage(1 + i, id, state));
-
-			if ((bytesRead = in.read(response)) <= 0) {
-				System.out.format("Unexpected response. Read %d bytes.%n", bytesRead);
-				break;
-			} else if (response[0] != 1) {
-				System.out.format("Unexpected response. Expected 1. Actual %c%n", response[0]);
-				break;
-			}
+			bytes += send(new UpdateOneMessage(i + 1, id, new State(i, i).toString()), false);
 		}
 
 		char[] closeMessageResponse = new char[1];
-		bytes += send(new CloseMessage(id));
+		bytes += send(new CloseMessage(id), true);
 		in.read(closeMessageResponse);
 		if (closeMessageResponse[0] != 1) {
 			System.out.println("unexpected response on close " + closeMessageResponse[0]);
@@ -75,11 +64,14 @@ public class Client {
 		socket.close();
 	}
 
-	private int send(final Message message) throws Exception {
+	private int send(final Message message, final boolean flush) throws Exception {
 		final byte[] bytes = message.serialize();
 		Debugger.print(bytes);
 		out.write(bytes);
-		out.flush();
+		if (flush) {
+			// Only flush if the caller deems it necessary.
+			out.flush();
+		}
 		return bytes.length;
 	}
 }
