@@ -3,7 +3,6 @@ package tracker.message;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-
 import tracker.common.Debugger;
 import tracker.common.Parser;
 
@@ -28,11 +27,11 @@ public class UpdateOneMessage implements Message {
 			dos.write(1);
 			dos.write(MessageType.UpdateOne.get());
 
-			// payload length
-			// 4 bytes version
-			// 4 bytes id length
-			// 4 bytes state length
-			// variable length: id, state
+			// payload length =
+			// 8 bytes version
+			// + 8 bytes id length
+			// + 8 bytes state length
+			// + variable length: id, state
 			dos.writeLong(3 * 8 + id.length() + state.length());
 			dos.writeLong(version);
 
@@ -50,9 +49,8 @@ public class UpdateOneMessage implements Message {
 
 	public static UpdateOneMessage parse(final BufferedReader in) {
 		final long payloadLen = parser.readLong(in);
-
 		if (payloadLen > 1000) {
-			System.err.println("something is up, payload shouldn't be longer than 1000 bytes");
+			throw new IllegalArgumentException(String.format("Payload shouldn't be longer than 1000 bytes but is %d%n", payloadLen));
 		}
 
 		final byte[] bytes = parser.readBytes(in, (int) payloadLen);
@@ -61,7 +59,7 @@ public class UpdateOneMessage implements Message {
 		final long version = parser.readLong(bytes, 0);
 		final long lenId = parser.readLong(bytes, 0 + 8);
 		if (lenId > 10) {
-			throw new IllegalArgumentException("something is up, the ID should not be longer than 10");
+			throw new IllegalArgumentException(String.format("ID should not be longer than 10 but is %d. payloadLen=%d, version=%d%n", lenId, payloadLen, version));
 		}
 		final String id = parser.readString(bytes, 0 + 8 + 8, lenId);
 		final long lenState = parser.readLong(bytes, 0 + 8 + 8 + lenId);
@@ -69,6 +67,8 @@ public class UpdateOneMessage implements Message {
 			throw new IllegalArgumentException("something is up. state string should not be longer than 50 ");
 		}
 		final String state = parser.readString(bytes, 0 + 8 + 8 + lenId + 8, lenState);
+
+		Debugger.print(String.format("version=%d, lenId=%d, lenState=%d, id=%s, state=%s%n", version, lenId, lenState, id, state));
 
 		return new UpdateOneMessage(version, id, state);
 	}

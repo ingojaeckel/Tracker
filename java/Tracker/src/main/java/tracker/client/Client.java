@@ -3,7 +3,6 @@ package tracker.client;
 import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-
 import tracker.common.Debugger;
 import tracker.common.State;
 import tracker.message.CloseMessage;
@@ -64,7 +63,7 @@ public class Client {
 		socket.close();
 	}
 
-	private int send(final Message message, final boolean flush) throws Exception {
+	public int send(final Message message, final boolean flush) throws Exception {
 		final byte[] bytes = message.serialize();
 		Debugger.print(bytes);
 		out.write(bytes);

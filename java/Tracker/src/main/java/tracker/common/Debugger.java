@@ -4,7 +4,7 @@ public class Debugger {
 	public static boolean ENABLED = false;
 
 	public static String bytesToString(final byte[] bytes) {
-		StringBuilder buf = new StringBuilder();
+		final StringBuilder buf = new StringBuilder();
 		buf.append("{\n");
 
 		for (int i = 0; i < bytes.length; i++) {
@@ -24,9 +24,13 @@ public class Debugger {
 		return buf.toString().trim();
 	}
 
-	public static void print(final byte[] bytes) {
+	public static void print(final String message) {
 		if (ENABLED) {
-			System.out.println(bytesToString(bytes));
+			System.out.println(message);
 		}
+	}
+
+	public static void print(final byte[] bytes) {
+		print(bytesToString(bytes));
 	}
 }
