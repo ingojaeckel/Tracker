@@ -2,6 +2,7 @@ package tracker.message;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import tracker.client.Client;
 import tracker.common.Debugger;
 import tracker.server.Server;
@@ -20,7 +21,7 @@ public class ClientServerCommunicationTest {
 	@Test
 	public void sendOneMessage() throws Exception {
 		server.listen();
-		client.send(new UpdateOneMessage(384, "1234567", "[382,382]"), true);
+		client.send(new UpdateOneMessage("1234567", "[382,382]"), true);
 		Thread.sleep(1 * 1000);
 		server.stop();
 	}

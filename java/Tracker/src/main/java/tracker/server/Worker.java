@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import tracker.common.Debugger;
 import tracker.common.ID;
-import tracker.common.Versioned;
 import tracker.message.CloseMessage;
 import tracker.message.Message;
 import tracker.message.MessageType;
@@ -19,9 +18,9 @@ public class Worker implements Runnable {
 	private static final byte[] OK = new byte[] { 1 };
 	private final BufferedReader in;
 	private final BufferedOutputStream out;
-	private final ConcurrentHashMap<String, Versioned<String>> map;
+	private final ConcurrentHashMap<String, String> map;
 
-	public Worker(final Socket socket, final ConcurrentHashMap<String, Versioned<String>> map) {
+	public Worker(final Socket socket, final ConcurrentHashMap<String, String> map) {
 		try {
 			System.out.println("connection " + socket.toString());
 			this.map = map;
@@ -47,7 +46,7 @@ public class Worker implements Runnable {
 					final OpenMessage message1 = OpenMessage.parse(in);
 					final String id = ID.random().toString();
 
-					map.put(id, new Versioned<String>(0, message1.getState()));
+					map.put(id, message1.getState());
 
 					if (Debugger.ENABLED) {
 						System.out.format("initialized id='%s' with state='%s' (version=%d)%n", id, message1.getState(), 0);
@@ -56,7 +55,6 @@ public class Worker implements Runnable {
 					break;
 				case Close:
 					final CloseMessage message = CloseMessage.parse(in);
-
 					map.remove(message.getId());
 
 					if (Debugger.ENABLED) {
@@ -68,16 +66,10 @@ public class Worker implements Runnable {
 					break;
 				case UpdateOne:
 					final UpdateOneMessage m3 = UpdateOneMessage.parse(in);
+					map.put(m3.getId(), m3.getState());
 
-					final boolean keyExists = map.containsKey(m3.getId());
-					final boolean olderVersionExists = map.containsKey(m3.getId()) && m3.getVersion() > map.get(m3.getId()).getVersion();
-
-					if (olderVersionExists || !keyExists) {
-						map.put(m3.getId(), new Versioned<String>(m3.getVersion(), m3.getState()));
-
-						if (Debugger.ENABLED) {
-							System.out.format("updated id='%s' with state='%s' (version=%d)%n", m3.getId(), m3.getState(), m3.getVersion());
-						}
+					if (Debugger.ENABLED) {
+						System.out.format("updated id='%s' with state='%s'%n", m3.getId(), m3.getState());
 					}
 
 					// Don't send a response to the client.

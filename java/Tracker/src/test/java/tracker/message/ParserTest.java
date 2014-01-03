@@ -83,11 +83,10 @@ public class ParserTest {
 				System.out.println(i);
 			}
 			final String state = new State(i, i).toString();
-			final UpdateOneMessage message = new UpdateOneMessage(i, id, state);
+			final UpdateOneMessage message = new UpdateOneMessage(id, state);
 			final byte[] serialized = message.serialize();
 
 			UpdateOneMessage deserialized = parser.read(serialized, UpdateOneMessage.class);
-			Assert.assertEquals(deserialized.getVersion(), i, "Failed in iteration " + i);
 			Assert.assertEquals(deserialized.getId(), id, "Failed in iteration " + i);
 			Assert.assertEquals(deserialized.getState(), state, "Failed in iteration " + i);
 		}

@@ -12,13 +12,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import tracker.common.Config;
-import tracker.common.Versioned;
 
 public class Server {
 	private final AtomicBoolean running;
 	private final ExecutorService executor;
 	private final ServerSocket serverSocket;
-	private final ConcurrentHashMap<String, Versioned<String>> map;
+	private final ConcurrentHashMap<String, String> map;
 
 	public Server(final int port) throws Exception {
 		System.out.print("opening socket.. ");
@@ -26,7 +25,7 @@ public class Server {
 		System.out.format("done. [%s]%n", serverSocket);
 
 		this.executor = Executors.newFixedThreadPool(Config.SERVER_THREADS);
-		this.map = new ConcurrentHashMap<String, Versioned<String>>();
+		this.map = new ConcurrentHashMap<String, String>();
 		this.running = new AtomicBoolean(false);
 	}
 
@@ -58,7 +57,7 @@ public class Server {
 		System.out.println("done.");
 	}
 
-	public Map<String, Versioned<String>> getData() {
+	public Map<String, String> getData() {
 		// Return immutable map to avoid outside modifications.
 		return Collections.unmodifiableMap(map);
 	}

@@ -3,6 +3,7 @@ package tracker.client;
 import java.io.BufferedOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
 import tracker.common.Debugger;
 import tracker.common.State;
 import tracker.message.CloseMessage;
@@ -36,7 +37,7 @@ public class Client {
 		final long before = System.currentTimeMillis();
 
 		for (int i = 0; i < maxMessageCount; i++) {
-			bytes += send(new UpdateOneMessage(i + 1, id, new State(i, i).toString()), false);
+			bytes += send(new UpdateOneMessage(id, new State(i, i).toString()), false);
 		}
 
 		char[] closeMessageResponse = new char[1];
