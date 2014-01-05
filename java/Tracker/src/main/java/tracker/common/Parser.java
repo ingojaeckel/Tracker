@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import tracker.message.Message;
 import tracker.message.MessageType;
-import tracker.message.UpdateOneMessage;
+import tracker.message.UpdateMessage;
 
 public class Parser {
 	/**
@@ -116,8 +116,8 @@ public class Parser {
 		}
 
 		switch (MessageType.from(bytes[2])) {
-		case UpdateOne:
-			return (T) UpdateOneMessage.parse(bytes);
+		case Update:
+			return (T) UpdateMessage.parse(bytes);
 			/*
 			 * case Open: return OpenMessage.parse(payload); case Close: return
 			 * CloseMessage.parse(payload);

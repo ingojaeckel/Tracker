@@ -1,7 +1,7 @@
 package tracker.message;
 
 public enum MessageType {
-	Open((byte) 0), Close((byte) 1), UpdateOne((byte) 2), UpdateAll((byte) 3);
+	Open((byte) 0), Close((byte) 1), Update((byte) 2), Get((byte) 3);
 
 	private final byte value;
 
@@ -20,9 +20,9 @@ public enum MessageType {
 		case 1:
 			return Close;
 		case 2:
-			return UpdateOne;
+			return Update;
 		case 3:
-			return UpdateAll;
+			return Get;
 		default:
 			throw new IllegalArgumentException("Unknown MessageType " + tag);
 		}

@@ -12,20 +12,22 @@ import tracker.message.CloseMessage;
 import tracker.message.Message;
 import tracker.message.MessageType;
 import tracker.message.OpenMessage;
-import tracker.message.UpdateOneMessage;
+import tracker.message.UpdateMessage;
 
 public class Worker implements Runnable {
 	private static final byte[] OK = new byte[] { 1 };
+	private final String clientId;
 	private final BufferedReader in;
 	private final BufferedOutputStream out;
 	private final ConcurrentHashMap<String, String> map;
 
 	public Worker(final Socket socket, final ConcurrentHashMap<String, String> map) {
 		try {
-			System.out.println("connection " + socket.toString());
+			this.clientId = socket.toString();
 			this.map = map;
 			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			this.out = new BufferedOutputStream(socket.getOutputStream());
+			System.out.println("Created worker for connection " + clientId);
 		} catch (final Exception exception) {
 			throw new RuntimeException(exception);
 		}
@@ -47,37 +49,33 @@ public class Worker implements Runnable {
 					final String id = ID.random().toString();
 
 					map.put(id, message1.getState());
+					Debugger.print(String.format("initialized id='%s' with state='%s' (version=%d)%n", id, message1.getState(), 0));
 
-					if (Debugger.ENABLED) {
-						System.out.format("initialized id='%s' with state='%s' (version=%d)%n", id, message1.getState(), 0);
-					}
-					writeAndFlush(id.getBytes());
+					writeAndFlush(OK);
 					break;
 				case Close:
 					final CloseMessage message = CloseMessage.parse(in);
-					map.remove(message.getId());
+					map.remove(clientId);
 
-					if (Debugger.ENABLED) {
-						System.out.format("closed connection to '%s'%n", message.getId());
-					}
+					Debugger.print(String.format("closed connection to '%s'%n", clientId));
 
 					writeAndFlush(OK);
 					running = false;
 					break;
-				case UpdateOne:
-					final UpdateOneMessage m3 = UpdateOneMessage.parse(in);
-					map.put(m3.getId(), m3.getState());
+				case Update:
+					final UpdateMessage m3 = UpdateMessage.parse(in);
+					map.put(clientId, m3.getState());
 
 					if (Debugger.ENABLED) {
-						System.out.format("updated id='%s' with state='%s'%n", m3.getId(), m3.getState());
+						System.out.format("updated id='%s' with state='%s'%n", clientId, m3.getState());
 					}
 
 					// Don't send a response to the client.
 					break;
-				case UpdateAll:
+				case Get:
 					// Not implemented yet.
-					System.out.println("UpdateAll");
-					writeAndFlush(OK);
+					System.out.println("Get");
+					writeAndFlush(OK); // TODO send response based on map.toString()
 					break;
 				default:
 					throw new IllegalArgumentException("Invalid MessageType " + header[2]);

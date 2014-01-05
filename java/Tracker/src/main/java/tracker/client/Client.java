@@ -9,7 +9,7 @@ import tracker.common.State;
 import tracker.message.CloseMessage;
 import tracker.message.Message;
 import tracker.message.OpenMessage;
-import tracker.message.UpdateOneMessage;
+import tracker.message.UpdateMessage;
 
 public class Client {
 	private final Socket socket;
@@ -27,21 +27,23 @@ public class Client {
 	public void run(final int maxMessageCount) throws Exception {
 		int bytes = 0;
 
-		System.out.println("sending open request..");
+		System.out.print("sending open request.. ");
 		bytes += send(new OpenMessage(new State(0, 0).toString()), true);
-		final char[] openMessageResponse = new char[16];
+		final char[] openMessageResponse = new char[1];
 		in.read(openMessageResponse);
-		final String id = new String(openMessageResponse);
-		System.out.println("Received ID: " + id);
+		if (openMessageResponse[0] != 1) {
+			throw new IllegalArgumentException("Unexpected response on open " + openMessageResponse[0]);
+		}
+		System.out.println("done.");
 
 		final long before = System.currentTimeMillis();
 
 		for (int i = 0; i < maxMessageCount; i++) {
-			bytes += send(new UpdateOneMessage(id, new State(i, i).toString()), false);
+			bytes += send(new UpdateMessage(new State(i, i).toString()), false);
 		}
 
 		char[] closeMessageResponse = new char[1];
-		bytes += send(new CloseMessage(id), true);
+		bytes += send(new CloseMessage(), true);
 		in.read(closeMessageResponse);
 		if (closeMessageResponse[0] != 1) {
 			throw new IllegalArgumentException("unexpected response on close " + closeMessageResponse[0]);
@@ -74,4 +76,5 @@ public class Client {
 		}
 		return bytes.length;
 	}
+
 }

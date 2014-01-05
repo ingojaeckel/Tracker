@@ -21,7 +21,7 @@ public class ClientServerCommunicationTest {
 	@Test
 	public void sendOneMessage() throws Exception {
 		server.listen();
-		client.send(new UpdateOneMessage("1234567", "[382,382]"), true);
+		client.send(new UpdateMessage("[382,382]"), true);
 		Thread.sleep(1 * 1000);
 		server.stop();
 	}
