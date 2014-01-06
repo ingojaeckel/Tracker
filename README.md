@@ -47,3 +47,8 @@ Bytes in sample packets are shown in decimal.
 | 42    | 2    | 04 03 97 98 99 | None | Updates the state of the connected client to "abc" |
 | 42    | 3    | None | 15 123 101 61 102  44  32  99  61   100  44  32  97  61  98 125 | Requests the overall state of all connected clients. In this case, the server responds with "{a=b, c=d, e=f}". |
 
+Resources
+=========
+* Letting a JavaScript client talk to Node.js http://stackoverflow.com/questions/7340475/client-side-tcp-with-node-js-socket-io
+ * Maybe this can be used to let a JavaScript client talk with the TCP server with Node.js as a proxy?
+* Node.js for Raspberry Pi https://gist.github.com/adammw/3245130
