@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jaeckel/Tracker.png?branch=master)](https://travis-ci.org/jaeckel/Tracker)
+[![Build Status](https://travis-ci.org/ingojaeckel/Tracker.png?branch=master)](https://travis-ci.org/ingojaeckel/Tracker)
 
 Introduction
 ============
