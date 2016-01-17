@@ -41,11 +41,12 @@ public class SerializationTest {
 		map.put("a", "b");
 		map.put("c", "d");
 		map.put("e", "f");
-		
+
 		byte[] bytes = map.toString().getBytes();
-		System.out.println(map.toString());
 		Debugger.print(bytes);
-		Assert.assertEquals(bytes, new byte[]{ 123, 101,  61, 102,  44,  32,  99,  61,   100,  44,  32,  97,  61,  98, 125});
+
+		//                                     {      a    =   b     ,
+		Assert.assertEquals(bytes, new byte[]{ 123,  97,  61,  98,  44,  32,  99,  61,   100,  44,  32, 101,  61, 102, 125});
 	}
 
 	@Test
