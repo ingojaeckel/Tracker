@@ -11,14 +11,14 @@ public class ClientServerCommunicationTest {
 	private Server server;
 	private Client client;
 
-	@BeforeMethod
+	@BeforeMethod(enabled = false)
 	public void setup() throws Exception {
 		Debugger.ENABLED = true;
 		this.server = new Server(6789);
 		this.client = new Client("localhost", 6789);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void sendOneMessage() throws Exception {
 		server.listen();
 		client.send(new UpdateMessage("[382,382]"), true);
